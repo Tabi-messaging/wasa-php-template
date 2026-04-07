@@ -107,11 +107,16 @@ function renderForm() {
       break;
 
     case 'media':
-      h = `<form onsubmit="event.preventDefault(); api({action:'messages.send', to:this.to.value, content:this.content.value, messageType:this.messageType.value, mediaUrl:this.mediaUrl.value})" class="space-y-4">
+      h = `<form id="mediaForm" onsubmit="event.preventDefault(); handleMediaSubmit(this)" class="space-y-4">
         ${field('Recipient', `<input name="to" class="${inp}" placeholder="2348012345678" required />`)}
         ${field('Media type', `<select name="messageType" class="${inp}"><option value="image">Image</option><option value="video">Video</option><option value="audio">Audio</option><option value="document">Document</option></select>`)}
-        ${field('Media URL', `<input name="mediaUrl" class="${inp}" placeholder="https://example.com/photo.jpg" required />`)}
-        ${field('Caption / text', `<input name="content" class="${inp}" placeholder="Check this out!" required />`)}
+        <div class="flex gap-2">
+          <button type="button" onclick="setMediaMode(true)" id="btnUpload" class="rounded-md px-3 py-1.5 text-xs font-medium transition-colors bg-indigo-100 text-indigo-700">Upload file</button>
+          <button type="button" onclick="setMediaMode(false)" id="btnUrl" class="rounded-md px-3 py-1.5 text-xs font-medium transition-colors bg-slate-100 text-slate-500 hover:bg-slate-200">Paste URL</button>
+        </div>
+        <div id="mediaFileField">${field('Choose file (max 16 MB)', `<input name="file" type="file" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx" class="${inp}" required /><p class="mt-1 text-xs text-slate-400">Images up to 5 MB, videos up to 16 MB, documents up to 16 MB</p>`)}</div>
+        <div id="mediaUrlField" style="display:none">${field('Media URL (must be publicly accessible)', `<input name="mediaUrl" class="${inp}" placeholder="https://example.com/photo.jpg" />`)}</div>
+        ${field('Caption / text', `<input name="content" class="${inp}" placeholder="Check this out!" />`)}
         <button type="submit" class="${btnCls}">Send Media</button>
       </form>`;
       break;
@@ -169,6 +174,50 @@ function renderForm() {
       break;
   }
   fp.innerHTML = h;
+}
+
+let useFileUpload = true;
+
+function setMediaMode(isFile) {
+  useFileUpload = isFile;
+  const fileField = document.getElementById('mediaFileField');
+  const urlField = document.getElementById('mediaUrlField');
+  const btnUp = document.getElementById('btnUpload');
+  const btnUr = document.getElementById('btnUrl');
+  if (fileField && urlField) {
+    fileField.style.display = isFile ? '' : 'none';
+    urlField.style.display = isFile ? 'none' : '';
+    if (isFile) { fileField.querySelector('input').required = true; urlField.querySelector('input').required = false; }
+    else { fileField.querySelector('input').required = false; urlField.querySelector('input').required = true; }
+  }
+  if (btnUp) btnUp.className = `rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${isFile ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`;
+  if (btnUr) btnUr.className = `rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${!isFile ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`;
+}
+
+async function handleMediaSubmit(form) {
+  const out = document.getElementById('output');
+  const channelId = document.getElementById('channelId').value;
+
+  if (useFileUpload) {
+    const file = form.file.files[0];
+    if (!file) { out.textContent = 'Please select a file.'; return; }
+    out.textContent = 'Uploading & sending...';
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('to', form.to.value);
+    fd.append('messageType', form.messageType.value);
+    fd.append('content', form.content.value || 'Sent via Wasa (' + form.messageType.value + ')');
+    fd.append('channelId', channelId);
+    try {
+      const res = await fetch('/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      out.textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+      out.textContent = 'Error: ' + e.message;
+    }
+  } else {
+    api({ action: 'messages.send', to: form.to.value, content: form.content.value || 'Sent via Wasa', messageType: form.messageType.value, mediaUrl: form.mediaUrl.value });
+  }
 }
 
 renderNav();

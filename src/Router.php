@@ -13,6 +13,11 @@ class Router
             return;
         }
 
+        if ($uri === '/upload' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            require __DIR__ . '/../routes/upload.php';
+            return;
+        }
+
         require __DIR__ . '/../templates/app.php';
     }
 }

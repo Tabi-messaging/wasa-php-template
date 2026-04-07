@@ -1,0 +1,72 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "4cc4d23fc63d3ebb25d581a7bdd82af9",
+    "packages": [
+        {
+            "name": "tabi/sdk",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Tabi-messaging/tabi-sdk-php.git",
+                "reference": "aa997996b6bdacad9f3438edf5793d63f165e81a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Tabi-messaging/tabi-sdk-php/zipball/aa997996b6bdacad9f3438edf5793d63f165e81a",
+                "reference": "aa997996b6bdacad9f3438edf5793d63f165e81a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tabi\\SDK\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tabi",
+                    "homepage": "https://c36.online"
+                }
+            ],
+            "description": "Official PHP SDK for the Tabi WhatsApp business messaging API",
+            "homepage": "https://c36.online/sdks",
+            "keywords": [
+                "api",
+                "business",
+                "messaging",
+                "sdk",
+                "tabi",
+                "whatsapp"
+            ],
+            "support": {
+                "issues": "https://github.com/Tabi-messaging/tabi-sdk-php/issues",
+                "source": "https://github.com/Tabi-messaging/tabi-sdk-php"
+            },
+            "time": "2026-04-07T18:40:37+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.1"
+    },
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}

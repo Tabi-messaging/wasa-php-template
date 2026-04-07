@@ -1,6 +1,6 @@
 <?php
 
-use Tabi\TabiClient;
+use Tabi\SDK\TabiClient;
 use Wasa\Env;
 
 header('Content-Type: application/json');
@@ -15,52 +15,48 @@ $input = json_decode(file_get_contents('php://input'), true) ?: [];
 $action = $input['action'] ?? '';
 $channelId = $input['channelId'] ?? Env::get('TABI_CHANNEL_ID');
 
-$tabi = new TabiClient([
-    'apiKey'  => $apiKey,
-    'baseUrl' => Env::get('TABI_BASE_URL', 'https://api.c36.online/api/v1'),
-]);
+$tabi = new TabiClient($apiKey, Env::get('TABI_BASE_URL', 'https://api.c36.online/api/v1'));
 
 try {
     $result = match ($action) {
         /* Channels */
-        'channels.list'   => $tabi->channels->list(),
-        'channels.status'  => $tabi->channels->status($channelId),
+        'channels.list'    => $tabi->channels()->list(),
+        'channels.status'  => $tabi->channels()->status($channelId),
 
         /* Messages */
-        'messages.send' => $tabi->messages->send($channelId, [
+        'messages.send' => $tabi->messages()->send($channelId, [
             'to'          => $input['to'] ?? '',
             'content'     => $input['content'] ?? '',
             'messageType' => $input['messageType'] ?? 'text',
             'mediaUrl'    => $input['mediaUrl'] ?? null,
         ]),
-        'messages.sendLocation' => $tabi->messages->sendLocation($channelId, [
+        'messages.sendLocation' => $tabi->messages()->sendLocation($channelId, [
             'to'        => $input['to'] ?? '',
-            'latitude'  => (float) ($input['latitude'] ?? 0),
-            'longitude' => (float) ($input['longitude'] ?? 0),
-            'name'      => $input['name'] ?? '',
+            'latitude'  => (string) ($input['latitude'] ?? '0'),
+            'longitude' => (string) ($input['longitude'] ?? '0'),
         ]),
-        'messages.sendPoll' => $tabi->messages->sendPoll($channelId, [
+        'messages.sendPoll' => $tabi->messages()->sendPoll($channelId, [
             'to'        => $input['to'] ?? '',
             'question'  => $input['question'] ?? '',
             'options'   => $input['options'] ?? [],
             'maxAnswer' => (int) ($input['maxAnswer'] ?? 1),
         ]),
-        'messages.sendContact' => $tabi->messages->sendContact($channelId, [
+        'messages.sendContact' => $tabi->messages()->sendContact($channelId, [
             'to'           => $input['to'] ?? '',
             'contactName'  => $input['contactName'] ?? '',
             'contactPhone' => $input['contactPhone'] ?? '',
         ]),
 
         /* Contacts */
-        'contacts.list'   => $tabi->contacts->list(['page' => $input['page'] ?? 1, 'limit' => $input['limit'] ?? 20]),
-        'contacts.create' => $tabi->contacts->create($input['data'] ?? []),
+        'contacts.list'   => $tabi->contacts()->list(['page' => $input['page'] ?? 1, 'limit' => $input['limit'] ?? 20]),
+        'contacts.create' => $tabi->contacts()->create($input['data'] ?? []),
 
         /* Conversations */
-        'conversations.list' => $tabi->conversations->list(['page' => $input['page'] ?? 1, 'limit' => $input['limit'] ?? 20]),
+        'conversations.list' => $tabi->conversations()->list(['page' => $input['page'] ?? 1, 'limit' => $input['limit'] ?? 20]),
 
         /* Webhooks */
-        'webhooks.list'   => $tabi->webhooks->list(),
-        'webhooks.create' => $tabi->webhooks->create($input['data'] ?? []),
+        'webhooks.list'   => $tabi->webhooks()->list(),
+        'webhooks.create' => $tabi->webhooks()->create($input['data'] ?? []),
 
         default => throw new \RuntimeException("Unknown action: {$action}"),
     };
