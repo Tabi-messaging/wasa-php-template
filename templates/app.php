@@ -117,11 +117,11 @@ function renderForm() {
       break;
 
     case 'poll':
-      h = `<form onsubmit="event.preventDefault(); const opts=this.options.value.split('\\n').map(o=>o.trim()).filter(Boolean); api({action:'messages.sendPoll', to:this.to.value, pollName:this.pollName.value, options:opts, selectableCount:+this.sel.value})" class="space-y-4">
+      h = `<form onsubmit="event.preventDefault(); const opts=this.options.value.split('\\n').map(o=>o.trim()).filter(Boolean); api({action:'messages.sendPoll', to:this.to.value, question:this.question.value, options:opts, maxAnswer:+this.maxAns.value})" class="space-y-4">
         ${field('Recipient', `<input name="to" class="${inp}" placeholder="2348012345678" required />`)}
-        ${field('Poll question', `<input name="pollName" class="${inp}" placeholder="What is your favourite?" required />`)}
+        ${field('Poll question', `<input name="question" class="${inp}" placeholder="What is your favourite?" required />`)}
         ${field('Options (one per line)', `<textarea name="options" class="${inp} min-h-[100px]" required>Option 1\nOption 2\nOption 3</textarea>`)}
-        ${field('Max selectable', `<input name="sel" type="number" min="1" value="1" class="${inp}" />`)}
+        ${field('Max selectable answers', `<input name="maxAns" type="number" min="1" value="1" class="${inp}" />`)}
         <button type="submit" class="${btnCls}">Send Poll</button>
       </form>`;
       break;
@@ -137,7 +137,7 @@ function renderForm() {
       break;
 
     case 'contact':
-      h = `<form onsubmit="event.preventDefault(); api({action:'messages.sendContact', to:this.to.value, contact:{fullName:this.fn.value, phone:this.cp.value}})" class="space-y-4">
+      h = `<form onsubmit="event.preventDefault(); api({action:'messages.sendContact', to:this.to.value, contactName:this.fn.value, contactPhone:this.cp.value})" class="space-y-4">
         ${field('Recipient', `<input name="to" class="${inp}" placeholder="2348012345678" required />`)}
         ${field('Contact name', `<input name="fn" class="${inp}" placeholder="Jane Doe" required />`)}
         ${field('Contact phone', `<input name="cp" class="${inp}" placeholder="2348099999999" required />`)}

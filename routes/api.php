@@ -40,14 +40,15 @@ try {
             'name'      => $input['name'] ?? '',
         ]),
         'messages.sendPoll' => $tabi->messages->sendPoll($channelId, [
-            'to'              => $input['to'] ?? '',
-            'name'            => $input['pollName'] ?? '',
-            'options'         => $input['options'] ?? [],
-            'selectableCount' => (int) ($input['selectableCount'] ?? 1),
+            'to'        => $input['to'] ?? '',
+            'question'  => $input['question'] ?? '',
+            'options'   => $input['options'] ?? [],
+            'maxAnswer' => (int) ($input['maxAnswer'] ?? 1),
         ]),
         'messages.sendContact' => $tabi->messages->sendContact($channelId, [
-            'to'      => $input['to'] ?? '',
-            'contact' => $input['contact'] ?? [],
+            'to'           => $input['to'] ?? '',
+            'contactName'  => $input['contactName'] ?? '',
+            'contactPhone' => $input['contactPhone'] ?? '',
         ]),
 
         /* Contacts */
